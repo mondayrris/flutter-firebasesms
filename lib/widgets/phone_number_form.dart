@@ -61,7 +61,7 @@ class _PhoneNumberFormWidgetState extends State<PhoneNumberFormWidget> {
 
         // type read to generate
         context.read<PhoneAuthBloc>().add(
-          SendOtpToPhoneEvent(phoneNumber: phoneNumber)
+          PhoneAuthEvent.sendOtpToPhone(phoneNumber)
         );
         setState(() {
           widget.controller.clear();

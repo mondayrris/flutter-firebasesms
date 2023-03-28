@@ -40,23 +40,28 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
       create: (context) => PhoneAuthRepository(),
       child: BlocProvider(
         create: (context) => PhoneAuthBloc(
-          phoneAuthRepository:
-              RepositoryProvider.of<PhoneAuthRepository>(context),
+          phoneAuthRepository: RepositoryProvider.of<PhoneAuthRepository>(context),
         ),
         child: BlocListener<PhoneAuthBloc, PhoneAuthState>(
           listener: (context, state) {
-            if (state is PhoneAuthVerified) {
-              Navigator.pushReplacement(
-                context,
-                CupertinoPageRoute(
-                  builder: (_) => const MyHomePage(title: 'My Home'),
-                ),
-              );
-            } else if (state is PhoneAuthError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.error)),
-              );
-            }
+            state.map(
+              initial: (_) {},
+              loading: (_) {},
+              error: (PhoneAuthError phoneAuthError) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(phoneAuthError.error)),
+                );
+              },
+              verified: (_) {
+                Navigator.pushReplacement(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (_) => const MyHomePage(title: 'My Home'),
+                  ),
+                );
+              },
+              codeSentSuccess: (_) {},
+            );
           },
           child: Scaffold(
             appBar: AppBar(
@@ -85,9 +90,9 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
       child: Center(
         child: state is PhoneAuthCodeSentSuccess
             ? OtpFormWidget(
-          controller: _otpController,
-          verificationId: state.verificationId,
-        )
+                controller: _otpController,
+                verificationId: state.verificationId,
+              )
             : PhoneNumberFormWidget(controller: _phoneNumberController),
       ),
     );

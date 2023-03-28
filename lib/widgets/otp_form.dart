@@ -67,7 +67,7 @@ class _OtpFormWidgetState extends State<OtpFormWidget> {
 
         // type read to generate
         context.read<PhoneAuthBloc>().add(
-            VerifySentOtpEvent(otpCode: widget.controller.value.text, verificationId: widget.verificationId)
+            PhoneAuthEvent.verifySentOtp(widget.controller.value.text, widget.verificationId)
         );
         setState(() {
           widget.controller.clear();
